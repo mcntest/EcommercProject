@@ -39,15 +39,6 @@ public class OrderFeatureDefinitionSteps {
         //Setup Moved to Hooks file
         driver = (WebDriver) dict.readDict("mywebdriver");
         baseUrl = (String) dict.readDict("baseUrl");
-
-    }
-
-
-    @Before(order=1)
-    public void setUp() {
-
-        js = (JavascriptExecutor) driver;
-
         homePage = new HomePomPage(driver);
         loginPage = new LoginPomPage(driver);
         shopPage = new ShopPomPage(driver);
@@ -55,7 +46,10 @@ public class OrderFeatureDefinitionSteps {
         checkoutPage = new CheckoutPomPage(driver);
         confirmationPage = new OrderConfirmationPomPage(driver);
         accountOrdersPage = new AccountOrdersPomPage(driver);
+        js = (JavascriptExecutor) driver;
     }
+
+
 
     /*
     Logout after each test and quit driver
