@@ -5,13 +5,11 @@ import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
-import io.github.bonigarcia.wdm.WebDriverManager;
 import org.example.pompages.*;
 import org.example.utils.SharedDictionary;
 import org.hamcrest.MatcherAssert;
 import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 
 import java.text.NumberFormat;
 import java.util.Locale;
@@ -30,21 +28,24 @@ public class OrderFeatureDefinitionSteps {
 
     AccountOrdersPomPage accountOrdersPage;
     WebDriver driver;
-    String baseUrl = "https://www.edgewordstraining.co.uk/demo-site";
+    String baseUrl;// = "https://www.edgewordstraining.co.uk/demo-site";
 
     JavascriptExecutor js;
 
     private final SharedDictionary dict;
 
-    public OrderFeatureDefinitionSteps(SharedDictionary dict) {
-        this.dict = dict;
+    public OrderFeatureDefinitionSteps(SharedDictionary dictionary) {
+        this.dict = dictionary;
+        //Setup Moved to Hooks file
+        driver = (WebDriver) dict.readDict("mywebdriver");
+        baseUrl = (String) dict.readDict("baseUrl");
+
     }
 
 
-    @Before
+    @Before(order=1)
     public void setUp() {
-        WebDriverManager.chromedriver().setup();
-        driver = new ChromeDriver();
+
         js = (JavascriptExecutor) driver;
 
         homePage = new HomePomPage(driver);
@@ -59,7 +60,7 @@ public class OrderFeatureDefinitionSteps {
     /*
     Logout after each test and quit driver
      */
-    @After
+    @After(order=1)
     public void tearDown() {
         //Clear cart
         homePage.goCart();
@@ -74,9 +75,9 @@ public class OrderFeatureDefinitionSteps {
         homePage.logoutAccount();
         System.out.println("Logged out");
 
-        //Quit driver
-        driver.quit();
-        System.out.println("Quit driver");
+        //Quit driver - moved to Hooks
+        //driver.quit();
+        //System.out.println("Quit driver");
     }
     @Given("I am logged into my user account")
     public void i_am_logged_into_my_user_account() {
