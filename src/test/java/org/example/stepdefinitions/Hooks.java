@@ -9,7 +9,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 
 public class Hooks {
 
-    private WebDriver driver;
+    private static WebDriver driver;
 
     private final SharedDictionary dict;
 
@@ -23,6 +23,7 @@ public class Hooks {
         WebDriverManager.chromedriver().setup();
         driver = new ChromeDriver();
         dict.addDict("mywebdriver", driver);
+        //Could be read from
         dict.addDict("baseUrl", "https://www.edgewordstraining.co.uk/demo-site");
     }
 

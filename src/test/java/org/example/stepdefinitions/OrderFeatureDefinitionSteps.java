@@ -1,9 +1,11 @@
 package org.example.stepdefinitions;
 
 import io.cucumber.java.After;
+import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import org.example.base.StepBaseClass;
 import org.example.pompages.*;
 import org.example.utils.SharedDictionary;
 import org.hamcrest.MatcherAssert;
@@ -13,7 +15,7 @@ import org.openqa.selenium.WebDriver;
 import java.text.NumberFormat;
 import java.util.Locale;
 
-public class OrderFeatureDefinitionSteps {
+public class OrderFeatureDefinitionSteps  extends StepBaseClass {
     HomePomPage homePage;
     LoginPomPage loginPage;
 
@@ -27,17 +29,26 @@ public class OrderFeatureDefinitionSteps {
 
     AccountOrdersPomPage accountOrdersPage;
     WebDriver driver;
-    String baseUrl;// = "https://www.edgewordstraining.co.uk/demo-site";
+    String baseUrl;
 
     JavascriptExecutor js;
 
-    private final SharedDictionary dict;
+    String orderNumber = "";
+
+   // public  SharedDictionary dict;
 
     public OrderFeatureDefinitionSteps(SharedDictionary dictionary) {
-        this.dict = dictionary;
-        //Setup Moved to Hooks file
-        driver = (WebDriver) dict.readDict("mywebdriver");
-        baseUrl = (String) dict.readDict("baseUrl");
+        super(dictionary);
+    }
+
+
+    @Before(order=1)
+    public void setUp(){
+        super.setUp();
+        driver = super.driver;
+        baseUrl = super.baseUrl;
+
+
         homePage = new HomePomPage(driver);
         loginPage = new LoginPomPage(driver);
         shopPage = new ShopPomPage(driver);
@@ -48,13 +59,12 @@ public class OrderFeatureDefinitionSteps {
         js = (JavascriptExecutor) driver;
     }
 
-
-
     /*
     Logout after each test and quit driver
      */
     @After(order=1)
     public void tearDown() {
+
         //Clear cart
         homePage.goCart();
         try{
@@ -71,6 +81,7 @@ public class OrderFeatureDefinitionSteps {
         //Quit driver - moved to Hooks
         //driver.quit();
         //System.out.println("Quit driver");
+        //super.tearDown();
     }
     @Given("I am logged into my user account")
     public void i_am_logged_into_my_user_account() {
@@ -156,20 +167,21 @@ public class OrderFeatureDefinitionSteps {
 
         //get the order details on the confirmation page
         String title = confirmationPage.getTitle();
-        String orderNumber = confirmationPage.getOrderNumber();
+        String orderConfirmationNumber = confirmationPage.getOrderNumber();
         System.out.println("Title " + title);
-        System.out.println("Number " + orderNumber);
+        System.out.println("Number " + orderConfirmationNumber);
 
         //Store order number for future reference
-        dict.addDict("OrderNumber",orderNumber );
+        //dict.addDict("OrderNumber",orderNumber );
+        this.orderNumber =orderConfirmationNumber;
     }
 
     @Then("the order number corresponds to the stored order number")
     public void the_order_corresponds_to_the_stored_number() {
-        String orderNumber = (String)dict.readDict("OrderNumber");
+        //String orderNumber = (String)dict.readDict("OrderNumber");
         System.out.println("Checking order corresponds to " + orderNumber);
         String tableOrderNumber = accountOrdersPage.getOrderNumberFromTable();
-        MatcherAssert.assertThat("Order number could not be found in order table" , tableOrderNumber.equals("#" + orderNumber));
+        MatcherAssert.assertThat("Order number could not be found in order table" , tableOrderNumber.equals("#" + this.orderNumber));
     }
 
 }
