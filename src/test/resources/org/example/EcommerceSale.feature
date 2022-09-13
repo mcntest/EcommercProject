@@ -5,8 +5,8 @@ Feature: Website sales
   Scenario: Check coupon discount
     Given I am logged into my user account
     When I add an item to the cart
-    And I apply a coupon code
-    Then the correct discount is applied
+    And I apply a coupon code "edgewords"
+    Then the correct 15% discount is applied
     And the cart total is correct
 
   Scenario: Check order number

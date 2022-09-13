@@ -1,7 +1,6 @@
 package org.example.stepdefinitions;
 
 import io.cucumber.java.After;
-import io.cucumber.java.Before;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
@@ -98,21 +97,21 @@ public class OrderFeatureDefinitionSteps {
 
     }
 
-    @When("I apply a coupon code")
-    public void i_apply_a_coupon_code() {
+    @When("I apply a coupon code {string}")
+    public void i_apply_a_coupon_code(String coupon) {
 
         System.out.println("Applying coupon");
-        cartPage.applyCoupon("edgewords");
+        cartPage.applyCoupon(coupon);
 
     }
 
     /*
     Put assertions in @Then methods
      */
-    @Then("the correct discount is applied")
-    public void the_correct_discount_is_applied() {
+    @Then("the correct {double}% discount is applied")
+    public void the_correct_discount_is_applied(double discountPercent) {
         double itemValue = 16.00;
-        double itemDiscount = 0.15;
+        double itemDiscount = discountPercent/100;
         double itemDiscountValue = itemValue * itemDiscount;
         String subtotalAsString = NumberFormat.getCurrencyInstance(new Locale("en", "GB"))
                 .format(itemValue);
@@ -131,7 +130,7 @@ public class OrderFeatureDefinitionSteps {
 
         String couponDiscount = cartPage.getCouponValue();
         System.out.println("Discount: " + couponDiscount);
-        MatcherAssert.assertThat("Incorrect coupon value" , couponDiscount.equals(discountAsString));
+        MatcherAssert.assertThat("Incorrect coupon value " +discountAsString  , couponDiscount.equals(discountAsString));
 
     }
 
